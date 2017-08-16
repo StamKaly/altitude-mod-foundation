@@ -5,6 +5,22 @@ import json
 import time
 
 
+def teamno_to_team_colour(team_number):
+    colours = [2, 'Spec',
+               3, 'Red',
+               4, 'Blue',
+               5, 'Green',
+               6, 'Yellow',
+               7, 'Orange',
+               8, 'Purple',
+               9, 'Azure',
+               10, 'Pink',
+               11, 'Brown']
+    for number in colours:
+        if team_number == number:
+            return colours[colours.index(number) + 1]
+
+
 class AltitudeMod:
     def __init__(self, port, altitude_path, modded=False, lobby=None):
         self.log_file = join(altitude_path, 'servers', 'log.txt')
@@ -15,22 +31,6 @@ class AltitudeMod:
         self.players.get_commands_object(self.commands)
         self.current_line = 0
 
-    @staticmethod
-    def teamno_to_team_colour(team_number):
-        colours = [2, 'Spec',
-                   3, 'Red',
-                   4, 'Blue',
-                   5, 'Green',
-                   6, 'Yellow',
-                   7, 'Orange',
-                   8, 'Purple',
-                   9, 'Azure',
-                   10, 'Pink',
-                   11, 'Brown']
-        for number in colours:
-            if team_number == number:
-                return colours[colours.index(number)+1]
-
     def parse(self, decoded):
         try:
             event = decoded['type']
@@ -40,7 +40,7 @@ class AltitudeMod:
             elif event == "mapChange":
                 self.players._on_map_change(decoded['map'])
                 self.on_server_map_change(decoded['map'], decoded['mode'],
-                                          *[AltitudeMod.teamno_to_team_colour(decoded['{}Team'.format(team)])
+                                          *[teamno_to_team_colour(decoded['{}Team'.format(team)])
                                             for team in ['right', 'left']])
             elif event == "logPlanePositions":
                 position_by_player = []
@@ -99,7 +99,7 @@ class AltitudeMod:
                 self.on_spawn(self.players.player_from_player_id(decoded['player']),
                               *[decoded[argument] for argument in ['plane', 'perkRed', 'perkGreen',
                                                                    'perkBlue', 'skin']],
-                              AltitudeMod.teamno_to_team_colour(decoded['team']))
+                              teamno_to_team_colour(decoded['team']))
         except KeyError:
             print('Could not handle line "{}"'.format(decoded))
 
@@ -116,6 +116,7 @@ class AltitudeMod:
     def run(self):
         if getsize(self.log_file) != 0:
             self.archive_log()
+        self.commands.log_server_status()
         while True:
             with open(self.log_file) as log:
                 for line in log.readlines()[self.current_line:]:
