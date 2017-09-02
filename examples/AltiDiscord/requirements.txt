@@ -1,0 +1,2 @@
+janus
+discord.py[voice]
