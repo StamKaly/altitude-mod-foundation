@@ -14,6 +14,7 @@ class Players:
         self.modded = modded
         self.map_changed = False
         self.lobby = lobby
+        self.commands = None
 
     def get_commands_object(self, commands_object):
         self.commands = commands_object

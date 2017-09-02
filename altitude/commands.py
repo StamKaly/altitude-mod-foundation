@@ -7,8 +7,9 @@ class Commands:
     def write_command(self, cmd):
         with open(self.command_file, "a") as commands:
             commands.write("{}\n".format(cmd))
-
-    def aquote(self, nickname):
+    
+    @staticmethod
+    def aquote(nickname):
         return nickname.replace('\\', '\\\\').replace('"', '\\"')
 
     def start_tournament(self):
@@ -35,7 +36,7 @@ class Commands:
         """
         identity = vapor_id_or_ip if len(vapor_id_or_ip) == 36 else vapor_id_or_ip.split(":")[0] \
             if ':' in vapor_id_or_ip else vapor_id_or_ip
-        cmd = '{}addBan {} {} {} "{}"'.format(self.console, identity, duration, unit_time, self.aquote(reason))
+        cmd = '{}addBan {} {} {} "{}"'.format(self.console, identity, duration, unit_time, Commands.aquote(reason))
         self.write_command(cmd)
 
     def add_chat_block(self, vapor_id_or_ip, block_type, duration, unit_time, reason):
@@ -50,7 +51,7 @@ class Commands:
         identity = vapor_id_or_ip if len(vapor_id_or_ip) == 36 else vapor_id_or_ip.split(":")[0] \
             if ':' in vapor_id_or_ip else vapor_id_or_ip
         cmd = '{}addChatBlock {} {} {} {} "{}"'.format(self.console, identity, block_type, duration,
-                                                       unit_time, self.aquote(reason))
+                                                       unit_time, Commands.aquote(reason))
         self.write_command(cmd)
 
     def ban(self, nickname, duration, unit_time, reason):
@@ -61,8 +62,8 @@ class Commands:
         :param unit_time: "minute", "day", "hour", "week" or "forever" for years
         :param reason: A reason for the ban
         """
-        cmd = '{}ban "{}" {} {} "{}"'.format(self.console, self.aquote(nickname), duration,
-                                             unit_time, self.aquote(reason))
+        cmd = '{}ban "{}" {} {} "{}"'.format(self.console, Commands.aquote(nickname), duration,
+                                             unit_time, Commands.aquote(reason))
         self.write_command(cmd)
 
     def chat_block(self, nickname, block_type, duration, unit_time, reason):
@@ -74,8 +75,8 @@ class Commands:
         :param unit_time: "minute", "day", "hour", "week" or "forever" for years
         :param reason: A reason for the chat block
         """
-        cmd = '{}chatBlock "{}" {} {} {} "{}"'.format(self.console, self.aquote(nickname), block_type,
-                                                      duration, unit_time, self.aquote(reason))
+        cmd = '{}chatBlock "{}" {} {} {} "{}"'.format(self.console, Commands.aquote(nickname), block_type,
+                                                      duration, unit_time, Commands.aquote(reason))
         self.write_command(cmd)
 
     def remove_ban(self, vapor_id_or_ip):
@@ -107,8 +108,8 @@ class Commands:
         :param secret_code: Target server's password or None if there isn't one
         """
         secret_code = secret_code or "pw"
-        cmd = '{}serverRequestPlayerChangeServer "{}" {} {}'.format(self.console, self.aquote(nickname),
-                                                                    ip, self.aquote(secret_code))
+        cmd = '{}serverRequestPlayerChangeServer "{}" {} {}'.format(self.console, Commands.aquote(nickname),
+                                                                    ip, Commands.aquote(secret_code))
         self.write_command(cmd)
 
     def all_change_server(self, ip, secret_code):
@@ -119,8 +120,8 @@ class Commands:
         """
         secret_code = secret_code or "pw"
         for nickname in self.players.all_nicknames():
-            cmd = '{}serverRequestPlayerChangeServer "{}" {} {}'.format(self.console, self.aquote(nickname),
-                                                                        ip, self.aquote(secret_code))
+            cmd = '{}serverRequestPlayerChangeServer "{}" {} {}'.format(self.console, Commands.aquote(nickname),
+                                                                        ip, Commands.aquote(secret_code))
             self.write_command(cmd)
 
     def whisper(self, nickname, message):
@@ -130,7 +131,7 @@ class Commands:
         :param message:
         """
         if '\n' not in message:
-            cmd = '{}serverWhisper "{}" "{}"'.format(self.console, self.aquote(nickname), self.aquote(message))
+            cmd = '{}serverWhisper "{}" "{}"'.format(self.console, Commands.aquote(nickname), Commands.aquote(message))
             self.write_command(cmd)
         else:
             self.multiple_whispers(nickname, message.split('\n'))
@@ -142,7 +143,7 @@ class Commands:
         :param messages: A list of messages to send
         """
         for message in messages:
-            cmd = '{}serverWhisper "{}" "{}"'.format(self.console, self.aquote(nickname), self.aquote(message))
+            cmd = '{}serverWhisper "{}" "{}"'.format(self.console, Commands.aquote(nickname), Commands.aquote(message))
             self.write_command(cmd)
 
     def message(self, message):
@@ -151,7 +152,7 @@ class Commands:
         :param message: A string of message to send
         """
         if '\n' not in message:
-            cmd = '{}serverMessage "{}"'.format(self.console, self.aquote(message))
+            cmd = '{}serverMessage "{}"'.format(self.console, Commands.aquote(message))
             self.write_command(cmd)
         else:
             self.multiple_messages(message.split('\n'))
@@ -162,7 +163,7 @@ class Commands:
         :param messages: A list of messages to send
         """
         for message in messages:
-            cmd = '{}serverMessage "{}"'.format(self.console, self.aquote(message))
+            cmd = '{}serverMessage "{}"'.format(self.console, Commands.aquote(message))
             self.write_command(cmd)
 
     def log_server_status(self):
@@ -243,8 +244,9 @@ class Commands:
             weapon = 3
         cmd = '{}testDisableWeaponMode {}'.format(self.console, weapon)
         self.write_command(cmd)
-
-    def get_team(self, team):
+    
+    @staticmethod
+    def get_team(team):
         """
         Not a command for use manually! Converts parameter team given in the
         next commands to a number that can be understood from the server.
@@ -263,7 +265,7 @@ class Commands:
         :param nickname: Player's nickname to be moved
         :param team: "left", "right" or "spec"
         """
-        cmd = '{}assignTeam "{}" {}'.format(self.console, self.aquote(nickname), self.get_team(team))
+        cmd = '{}assignTeam "{}" {}'.format(self.console, Commands.aquote(nickname), Commands.get_team(team))
         self.write_command(cmd)
 
     def modify_tournament(self, nickname, team):
@@ -272,7 +274,7 @@ class Commands:
         :param nickname: Player's nickname to be moved
         :param team: "left", "right" or "spec"
         """
-        cmd = '{}modifyTournament "{}" {}'.format(self.console, self.aquote(nickname), self.get_team(team))
+        cmd = '{}modifyTournament "{}" {}'.format(self.console, Commands.aquote(nickname), Commands.get_team(team))
         self.write_command(cmd)
 
     def assign_everyone(self, team):
@@ -280,9 +282,9 @@ class Commands:
         Moves everyone in server to a single team when Tournament Mode is off.
         :param team: "left", "right" or "spec"
         """
-        team_number = self.get_team(team)
+        team_number = Commands.get_team(team)
         for player in self.players.all_nicknames():
-            cmd = '{}assignTeam "{}" {}'.format(self.console, self.aquote(player), team_number)
+            cmd = '{}assignTeam "{}" {}'.format(self.console, Commands.aquote(player), team_number)
             self.write_command(cmd)
 
     def modify_everyone(self, team):
@@ -290,7 +292,7 @@ class Commands:
         Moves everyone in server to a single team when Tournament Mode is on.
         :param team: "left", "right" or "spec"
         """
-        team_number = self.get_team(team)
+        team_number = Commands.get_team(team)
         for player in self.players.all_nicknames():
-            cmd = '{}modifyTournament "{}" {}'.format(self.console, self.aquote(player), team_number)
+            cmd = '{}modifyTournament "{}" {}'.format(self.console, Commands.aquote(player), team_number)
             self.write_command(cmd)
