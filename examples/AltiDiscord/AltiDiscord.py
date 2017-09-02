@@ -14,7 +14,7 @@ class AltiDiscord(AltitudeMod):
                     self.bot_handler.add_user(output[1][0], output[1][1])
                 elif output[0] == 'whisper':
                     self.commands.whisper(output[1].nickname, output[2])
-                elif output[0] == 'safeLeave':
+                elif output[0] == 'safe_leave':
                     self.bot_handler.leave(self.players.player_from_vapor_id(output[1]), False,
                                            safe_leave=True, number=output[2])
                 else:

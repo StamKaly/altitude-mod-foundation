@@ -19,7 +19,6 @@ class DiscordMusic(discord.Client):
         self.players = []
         self.current_player = None
         self.new_requests = []
-        self.bot_id = None
         self.alti_player = None
         self.current_volume = 1.00
 
@@ -83,13 +82,9 @@ class DiscordMusic(discord.Client):
                                         "{}, sorry but your secret number was not found.".format(message.author.mention)
                                         )
 
-        elif not self.bot_id and message.channel == self.text_channel and message.content == "Started":
-            self.bot_id = message.content
-            await self.delete_message(message)
-
     async def on_voice_state_update(self, before, after):
         if self.alti_player and self.alti_player[0] not in [member.id for member in self.voice_channel.voice_members]:
-            await self.output_queue.put(['safeLeave', self.alti_player[1], self.number])
+            await self.output_queue.put(['safe_leave', self.alti_player[1], self.number])
 
     async def bot_join_voice_channel(self, discord_id, vapor_id):
         if not self.is_voice_connected(self.server):
