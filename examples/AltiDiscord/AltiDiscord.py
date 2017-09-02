@@ -1,5 +1,5 @@
-from .altitude import AltitudeMod
-from .alti_discord import BotHandler
+from altitude import AltitudeMod
+from alti_discord import BotHandler
 
 
 class AltiDiscord(AltitudeMod):
