@@ -1,1 +1,1 @@
-from . import bot_handler
+from .bot_handler import BotHandler

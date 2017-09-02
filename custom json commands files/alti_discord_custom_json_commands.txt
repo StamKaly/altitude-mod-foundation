@@ -1,0 +1,7 @@
+{"name":"join", "arguments":[], "voteThreshold":0}
+{"name":"leave", "arguments":[], "voteThreshold":0}
+{"name":"play", "arguments":["string"], "argumentDescriptions":["Search terms"], "voteThreshold":0}
+{"name":"pause", "arguments":[], "voteThreshold":0}
+{"name":"resume", "arguments":[], "voteThreshold":0}
+{"name":"volume", "arguments":["string"], "argumentDescriptions":["Volume %"], "voteThreshold":0}
+{"name":"skip", "arguments":[], "voteThreshold":0}

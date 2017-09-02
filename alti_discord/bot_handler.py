@@ -1,7 +1,7 @@
 from threading import Thread
 from janus import Queue
-from . import bot, bot_database
 from random import randint
+from . import bot, bot_database
 
 
 class BotHandler:
