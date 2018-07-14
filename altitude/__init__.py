@@ -166,6 +166,9 @@ class AltitudeMod:
     def on_client_add(self, player):
         pass
 
+    def on_client_join(self, player):
+        pass
+
     def on_client_remove(self, nickname, vapor_id, ip, reason):
         pass
 

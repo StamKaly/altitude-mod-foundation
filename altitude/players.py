@@ -4,6 +4,8 @@ class Player:
         self.vapor_id = vapor_id
         self.player_id = player_id
         self.ip = ip
+        self.not_joined = True
+        self.loads_map = True
         self.joined_after_change_map = True
 
 
@@ -23,16 +25,29 @@ class Players:
         self.map_changed = map_name
         if self.modded and self.players:
             for player in self.players:
-                player.joined_after_change_map = False
+                player.loads_map = True
+
+    def check_if_everyone_joined_after_change_map(self):
+        for player in self.players:
+            if player.loads_map and not player.joined_after_change_map:
+                return False
+        return True
 
     def _on_player_info_ev(self, player_id):
-        if self.map_changed:
-            for player in self.players:
-                if player_id == player.player_id and not player.joined_after_change_map:
-                    player.joined_after_change_map = True
-                    self.main.on_player_map_change(player, self.map_changed)
-                    return
-            self.map_changed = False
+        player = [player for player in self.players if player.player_id == player_id][0]
+        if self.map_changed or hasattr(player, "not_joined"):
+            if player.loads_map and player.joined_after_change_map:
+                player.joined_after_change_map = False
+            elif player.loads_map and not player.joined_after_change_map:
+                player.loads_map = False
+                player.joined_after_change_map = True
+                self.main.on_player_map_change(player, self.map_changed)
+                if hasattr(player, "not_joined"):
+                    del player.not_joined
+                    self.main.on_client_join(player)
+            if self.check_if_everyone_joined_after_change_map():
+                self.map_changed = False
+
 
     def check_nickname_existence(self, nickname):
         for player in self.players:
